@@ -63,6 +63,14 @@ export function isPathInside(parent, candidate, pathApi = path) {
 }
 
 export function moveChanges(destination, root = repositoryRoot()) {
+  const normalizedInput = path.normalize(destination);
+  const staysBelowCurrentDirectory =
+    !path.isAbsolute(destination) &&
+    normalizedInput !== '..' &&
+    !normalizedInput.startsWith(`..${path.sep}`);
+  if (staysBelowCurrentDirectory) {
+    throw new Error('Move destination must be outside the source worktree.');
+  }
   const target = path.isAbsolute(destination)
     ? path.resolve(destination)
     : path.resolve(realpathSync('.'), destination);

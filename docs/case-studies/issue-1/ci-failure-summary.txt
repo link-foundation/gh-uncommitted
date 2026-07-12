@@ -31,3 +31,12 @@ Head SHA: 38f8632589fa508e7d41f3d21eab0e521a50ac90
 Windows still exposed a distinction between the canonical worktree path and an
 alias spelling of `process.cwd()`. Relative move destinations are now resolved
 from the canonical working-directory path before containment is checked.
+
+Follow-up run: 29180289402
+Head SHA: 6c649131ca7828fd0465e59867952b41637060b5
+
+Windows continued to expose runner-specific absolute path identities. The
+dangerous common case no longer depends on absolute identity: a relative path
+that stays below the current directory is necessarily inside the worktree and
+is rejected lexically before any absolute-path comparison. Parent-relative and
+absolute destinations continue through the canonical containment check.
