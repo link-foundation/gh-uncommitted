@@ -1,0 +1,15 @@
+{
+  "name": "gh-uncommitted",
+  "version": "0.1.0",
+  "description": "Copy, move, keep, archive, or stash all uncommitted Git changes",
+  "type": "module",
+  "bin": { "gh-uncommitted": "gh-uncommitted" },
+  "scripts": {
+    "test": "node --test",
+    "check": "node --check gh-uncommitted && node --check src/*.js && node --test"
+  },
+  "engines": { "node": ">=20" },
+  "license": "Unlicense",
+  "repository": { "type": "git", "url": "https://github.com/link-foundation/gh-uncommitted.git" },
+  "keywords": ["github-cli", "git", "backup", "stash", "uncommitted"]
+}

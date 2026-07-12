@@ -1,0 +1,59 @@
+#!/usr/bin/env node
+
+import { archiveChanges, collectChanges, copyChanges, keepChanges, moveChanges, repositoryRoot, stashChanges } from './src/uncommitted.js';
+
+const help = `Usage: gh uncommitted <command> [argument]
+
+Manage all tracked and untracked changes in the current Git worktree.
+
+Commands:
+  list                    List uncommitted paths
+  copy <directory>        Copy changed files and a deletion manifest
+  move <directory>        Copy changes, then clean the worktree
+  keep [message]          Create a stash checkpoint and keep working changes
+  archive <file.tar.gz>   Write a compressed snapshot and manifest
+  stash [message]         Stash changes, including untracked files
+  help                    Show this help
+
+Ignored files are not included. Existing destinations are never overwritten.`;
+
+function required(value, label) {
+  if (!value) throw new Error(`${label} is required.`);
+  return value;
+}
+
+try {
+  const [command = 'help', argument] = process.argv.slice(2);
+  if (command === 'help' || command === '--help' || command === '-h') {
+    console.log(help);
+  } else if (command === '--version' || command === '-v') {
+    console.log('0.1.0');
+  } else {
+    const root = repositoryRoot();
+    if (command === 'list') {
+      const changes = collectChanges(root);
+      if (changes.length === 0) console.log('No uncommitted changes.');
+      for (const change of changes) console.log(`${change.deleted ? 'D' : change.untracked ? '?' : 'M'} ${change.path}`);
+    } else if (command === 'copy') {
+      const result = copyChanges(required(argument, 'Destination directory'), root);
+      console.log(`Copied ${result.changes.length} change(s) to ${result.target}`);
+    } else if (command === 'move') {
+      const result = moveChanges(required(argument, 'Destination directory'), root);
+      console.log(`Moved ${result.changes.length} change(s) to ${result.target}`);
+    } else if (command === 'keep') {
+      keepChanges(argument || 'gh-uncommitted checkpoint', root);
+      console.log('Created a stash checkpoint and restored the working changes.');
+    } else if (command === 'archive') {
+      const result = archiveChanges(required(argument, 'Archive path'), root);
+      console.log(`Archived ${result.changes.length} change(s) to ${result.target}`);
+    } else if (command === 'stash') {
+      stashChanges(argument || 'gh-uncommitted', root);
+      console.log('Stashed all uncommitted changes.');
+    } else {
+      throw new Error(`Unknown command: ${command}\n\n${help}`);
+    }
+  }
+} catch (error) {
+  console.error(`gh-uncommitted: ${error.message}`);
+  process.exitCode = 1;
+}

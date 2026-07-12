@@ -1,0 +1,10 @@
+{
+  "number": 1,
+  "title": "Prototype",
+  "state": "OPEN",
+  "url": "https://github.com/link-foundation/gh-uncommitted/issues/1",
+  "author": "konard",
+  "labels": ["enhancement"],
+  "comments": 0,
+  "body": "A tool to copy, move, keep or archive or stash all uncommitted changes. Should be done with similar architecture and CI/CD as https://github.com/link-foundation/gh-upload-log. Collect issue-related data in docs/case-studies/issue-1, perform deep analysis with online research, enumerate all requirements, and propose solutions and plans."
+}
