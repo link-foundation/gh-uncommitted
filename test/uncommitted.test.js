@@ -5,6 +5,7 @@ import { mkdtempSync, readFileSync, existsSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { isPathInside } from '../src/uncommitted.js';
 
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const cli = path.join(root, 'gh-uncommitted');
@@ -62,6 +63,11 @@ test('move refuses a destination inside the worktree before changing anything', 
   assert.notEqual(result.status, 0);
   assert.match(result.stderr, /outside the source worktree/);
   assert.equal(git(repo, 'status', '--porcelain=v1'), before);
+});
+
+test('path containment recognizes Windows paths with mixed separators', () => {
+  assert.equal(isPathInside('D:/work/repo', 'D:\\work\\repo\\backup', path.win32), true);
+  assert.equal(isPathInside('D:/work/repo', 'D:\\work\\repo-copy', path.win32), false);
 });
 
 test('keep creates a stash and preserves staged and unstaged work', () => {

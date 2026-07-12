@@ -1,5 +1,5 @@
 import { execFileSync } from 'node:child_process';
-import { cpSync, existsSync, lstatSync, mkdirSync, readFileSync, readlinkSync, writeFileSync } from 'node:fs';
+import { cpSync, existsSync, lstatSync, mkdirSync, readFileSync, readlinkSync, realpathSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { gzipSync } from 'node:zlib';
 
@@ -9,7 +9,7 @@ function git(args, options = {}) {
 
 export function repositoryRoot() {
   try {
-    return git(['rev-parse', '--show-toplevel']).trim();
+    return realpathSync(git(['rev-parse', '--show-toplevel']).trim());
   } catch {
     throw new Error('Current directory is not inside a Git worktree.');
   }
@@ -55,10 +55,16 @@ export function copyChanges(destination, root = repositoryRoot()) {
   return { target, changes };
 }
 
+export function isPathInside(parent, candidate, pathApi = path) {
+  const normalizedParent = pathApi.resolve(parent);
+  const normalizedCandidate = pathApi.resolve(candidate);
+  const relative = pathApi.relative(normalizedParent, normalizedCandidate);
+  return relative === '' || (!relative.startsWith('..') && !pathApi.isAbsolute(relative));
+}
+
 export function moveChanges(destination, root = repositoryRoot()) {
   const target = path.resolve(destination);
-  const relative = path.relative(root, target);
-  if (relative === '' || (!relative.startsWith('..') && !path.isAbsolute(relative))) {
+  if (isPathInside(root, target)) {
     throw new Error('Move destination must be outside the source worktree.');
   }
   const result = copyChanges(target, root);

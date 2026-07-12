@@ -15,3 +15,12 @@ Both Windows jobs failed in `npm run check`:
 
 Root cause: PowerShell did not expand the source glob before invoking Node.
 Resolution: explicitly check `src/uncommitted.js`, which is shell-independent.
+
+Follow-up run: 29180225193
+Head SHA: 99349c6c52aec2e21da36b060293bdfbd4ed42ac
+
+The explicit syntax check succeeded on every platform. Both Windows jobs then
+exposed a path-containment regression: the internal move destination was not
+rejected when Git and Node supplied different path separator styles. The fix
+normalizes both paths before comparison and directly tests mixed Windows path
+separators with `path.win32` on every platform.
