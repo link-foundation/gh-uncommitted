@@ -63,7 +63,9 @@ export function isPathInside(parent, candidate, pathApi = path) {
 }
 
 export function moveChanges(destination, root = repositoryRoot()) {
-  const target = path.resolve(destination);
+  const target = path.isAbsolute(destination)
+    ? path.resolve(destination)
+    : path.resolve(realpathSync('.'), destination);
   if (isPathInside(root, target)) {
     throw new Error('Move destination must be outside the source worktree.');
   }

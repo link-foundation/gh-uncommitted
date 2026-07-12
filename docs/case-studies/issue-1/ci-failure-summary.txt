@@ -24,3 +24,10 @@ exposed a path-containment regression: the internal move destination was not
 rejected when Git and Node supplied different path separator styles. The fix
 normalizes both paths before comparison and directly tests mixed Windows path
 separators with `path.win32` on every platform.
+
+Follow-up run: 29180260344
+Head SHA: 38f8632589fa508e7d41f3d21eab0e521a50ac90
+
+Windows still exposed a distinction between the canonical worktree path and an
+alias spelling of `process.cwd()`. Relative move destinations are now resolved
+from the canonical working-directory path before containment is checked.
