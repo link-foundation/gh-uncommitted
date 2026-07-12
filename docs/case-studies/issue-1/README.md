@@ -23,6 +23,8 @@ CI plus tag-driven GitHub releases.
   repository had no merged pull requests to use as local precedent.
 - Pull request #2 had no conversation comments, inline review comments, or
   reviews at the start of implementation.
+- [ci-failure-summary.txt](./ci-failure-summary.txt) preserves the actionable
+  excerpt from the first six-platform CI run.
 - The referenced `link-foundation/gh-upload-log` repository was inspected at
   version 0.8.2. It uses a JavaScript executable, package scripts, automated
   tests, multi-platform checks, documentation, and release automation.
@@ -114,6 +116,12 @@ required.
    tests before completing the implementation. **Implemented.**
 6. Test supported Node versions on Linux, macOS, and Windows and create GitHub
    releases from version tags. **Implemented in workflows.**
+
+The first CI run passed on Linux and macOS but failed on Windows because the
+Windows npm shell did not expand the `src/*.js` glob passed to `node --check`.
+The check now names the source file explicitly. The workflows were also moved
+to `actions/checkout@v6` and `actions/setup-node@v6` after the run warned that
+the v4 actions' Node 20 runtime was deprecated.
 
 ## Verification
 

@@ -1,0 +1,17 @@
+Run: 29180181828
+Workflow: Tests
+Head SHA: 3e98d2251d3556e3c939d181bb00e3b85bd0db7c
+Created: 2026-07-12T04:45:38Z
+
+Linux: Node 20 passed; Node 22 passed.
+macOS: Node 20 passed; Node 22 passed.
+Windows: Node 20 failed; Node 22 failed.
+
+Both Windows jobs failed in `npm run check`:
+
+> node --check gh-uncommitted && node --check src/*.js && node --test
+> Error: Cannot find module 'D:\a\gh-uncommitted\gh-uncommitted\src\*.js'
+> code: 'MODULE_NOT_FOUND'
+
+Root cause: PowerShell did not expand the source glob before invoking Node.
+Resolution: explicitly check `src/uncommitted.js`, which is shell-independent.
