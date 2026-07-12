@@ -1,0 +1,42 @@
+Run: 29180181828
+Workflow: Tests
+Head SHA: 3e98d2251d3556e3c939d181bb00e3b85bd0db7c
+Created: 2026-07-12T04:45:38Z
+
+Linux: Node 20 passed; Node 22 passed.
+macOS: Node 20 passed; Node 22 passed.
+Windows: Node 20 failed; Node 22 failed.
+
+Both Windows jobs failed in `npm run check`:
+
+> node --check gh-uncommitted && node --check src/*.js && node --test
+> Error: Cannot find module 'D:\a\gh-uncommitted\gh-uncommitted\src\*.js'
+> code: 'MODULE_NOT_FOUND'
+
+Root cause: PowerShell did not expand the source glob before invoking Node.
+Resolution: explicitly check `src/uncommitted.js`, which is shell-independent.
+
+Follow-up run: 29180225193
+Head SHA: 99349c6c52aec2e21da36b060293bdfbd4ed42ac
+
+The explicit syntax check succeeded on every platform. Both Windows jobs then
+exposed a path-containment regression: the internal move destination was not
+rejected when Git and Node supplied different path separator styles. The fix
+normalizes both paths before comparison and directly tests mixed Windows path
+separators with `path.win32` on every platform.
+
+Follow-up run: 29180260344
+Head SHA: 38f8632589fa508e7d41f3d21eab0e521a50ac90
+
+Windows still exposed a distinction between the canonical worktree path and an
+alias spelling of `process.cwd()`. Relative move destinations are now resolved
+from the canonical working-directory path before containment is checked.
+
+Follow-up run: 29180289402
+Head SHA: 6c649131ca7828fd0465e59867952b41637060b5
+
+Windows continued to expose runner-specific absolute path identities. The
+dangerous common case no longer depends on absolute identity: a relative path
+that stays below the current directory is necessarily inside the worktree and
+is rejected lexically before any absolute-path comparison. Parent-relative and
+absolute destinations continue through the canonical containment check.
