@@ -11,6 +11,9 @@ Node.js 20 or newer and Git are required.
 gh extension install link-foundation/gh-uncommitted
 ```
 
+Once published, the standalone command can also be installed with
+`npm install --global gh-uncommitted`.
+
 For local development:
 
 ```sh
@@ -62,3 +65,10 @@ npm run check
 
 The test suite creates isolated temporary repositories and does not modify the
 repository where it runs.
+
+## Releases
+
+Version tags (`v` followed by the exact `package.json` version) run checks,
+create a GitHub release, and publish to npm using OIDC trusted publishing.
+No npm token is used by the release workflow. See [publishing setup and
+verification](docs/publishing.md) for the initial bootstrap and publisher settings.
