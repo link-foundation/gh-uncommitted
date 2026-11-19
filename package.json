@@ -1,5 +1,5 @@
 {
-  "name": "gh-uncommitted",
+  "name": "@link-foundation/gh-uncommitted",
   "version": "0.1.1",
   "description": "Copy, move, keep, archive, or stash all uncommitted Git changes",
   "type": "module",

@@ -17,15 +17,15 @@ are excluded by the package `files` allowlist.
 ## One-time bootstrap
 
 An npm package owner must perform the initial publication and publisher setup.
-An authenticated npm account with permission to create `gh-uncommitted` is
+An authenticated npm account with permission to create `@link-foundation/gh-uncommitted` is
 required. GitHub credentials alone cannot authorize these operations.
 
-1. Publish the original `gh-uncommitted@0.1.0` from the existing main-branch
-   implementation at commit `fa77c83`. In a separate clean checkout of that
-   commit, run `npm ci`, `npm run check`, and `npm pack --dry-run`; review the
-   package contents, then run `npm publish --access public` with interactive
-   npm authentication or a short-lived bootstrap token. Do not add that token
-   to the release workflow, commit it, or put it in a command-line argument.
+1. Publish `@link-foundation/gh-uncommitted@0.1.1` from the existing main-branch
+   implementation. In a separate clean checkout, run `npm ci`, `npm run check`,
+   and `npm pack --dry-run`; review the package contents, then run
+   `npm publish --access public` with interactive npm authentication or a
+   short-lived bootstrap token. Do not add that token to the release workflow,
+   commit it, or put it in a command-line argument.
 2. Open the package's **Settings → Trusted publishing** on npmjs.com and add
    a GitHub Actions publisher with these exact values:
 
@@ -55,7 +55,7 @@ required. GitHub credentials alone cannot authorize these operations.
 
 ## Verification
 
-Before setup, `npm view gh-uncommitted version` returns E404. To verify locally:
+Before setup, `npm view @link-foundation/gh-uncommitted version` returns E404. To verify locally:
 
 ```sh
 npm run check
@@ -71,8 +71,8 @@ packaging, but does not exercise OIDC authentication or create a package.
 After the real tag run, record its URL and verify:
 
 ```sh
-npm view gh-uncommitted version
-npm view gh-uncommitted@0.1.1 dist.attestations --json
+npm view @link-foundation/gh-uncommitted version
+npm view @link-foundation/gh-uncommitted@0.1.1 dist.attestations --json
 gh run list --repo link-foundation/gh-uncommitted --workflow release.yml
 gh release view v0.1.1 --repo link-foundation/gh-uncommitted
 ```
@@ -88,7 +88,7 @@ evidence for the token-free CI publication criterion.
 | Add npm OIDC publish job | `publish` in `.github/workflows/release.yml` | Workflow validation and tag-run evidence required |
 | Preserve GitHub releases | Existing release command retained before publishing | Tag-run evidence required |
 | Bootstrap `0.1.0`, attach publisher, remove token | One-time procedure above | Blocked: no authenticated npm account in solver environment |
-| `npm view gh-uncommitted version` succeeds | Requires actual bootstrap | Currently E404; incomplete |
+| `npm view @link-foundation/gh-uncommitted version` succeeds | Requires actual bootstrap | Currently E404; incomplete |
 | Tag publishes without `NPM_TOKEN` | OIDC workflow, prepared version `0.1.1` | Actual publication still required; incomplete |
 | npm lists repository and `release.yml` | Exact publisher fields above | npm account access required; incomplete |
 | GitHub release is created | Tag workflow release job | Actual tag run still required; incomplete |
