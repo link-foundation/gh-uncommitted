@@ -12,7 +12,7 @@ gh extension install link-foundation/gh-uncommitted
 ```
 
 Once published, the standalone command can also be installed with
-`npm install --global gh-uncommitted`.
+`npm install --global @link-foundation/gh-uncommitted`.
 
 For local development:
 
